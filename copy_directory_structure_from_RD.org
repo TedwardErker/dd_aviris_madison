@@ -1,0 +1,14 @@
+Evaluate the code block below to copy the directory structure from
+RD/aviris_madison to here.
+
+#+BEGIN_SRC sh
+
+cd ../../RD/aviris_madison
+find . -type d >../../DD/aviris_madison/dirs.txt
+cd ../../DD/aviris_madison
+xargs mkdir -p <dirs.txt
+
+
+#+END_SRC
+
+#+RESULTS:
