@@ -1,7 +1,96 @@
 #+TITLE: Madison AVIRIS Derived Data
 #+AUTHOR: Tedward Erker
 #+email: erker@wisc.edu
-#+PROPERTY:  header-args:R :cache no :results output :exports both :comments link :session *R:uft*
+#+PROPERTY:  header-args:R :cache no :results output :exports both :comments link :session *R:aviris_madison_dd*
 #+startup: indent
 
-*
+* copy directory structure from RD
+
+Evaluate the code block below to copy the directory structure from
+RD/aviris_madison to here.
+
+#+BEGIN_SRC sh
+cd ../../RD/aviris_madison
+find . -type d >../../DD/aviris_madison/dirs.txt
+cd ../../DD/aviris_madison
+xargs mkdir -p <dirs.txt
+#+END_SRC
+
+#+RESULTS:
+
+* make RGB versions of the images.
+#+begin_src R
+library(raster)
+library(stringr)
+#+end_src
+
+#+begin_src R
+  makeRGBfromAVIRIS_c<- function(rd.dir, year, basenames, appendage, r, g, b) {
+  out1 <- lapply(basenames[[1]], function(basename) {
+      out2 <- stack(str_c(rd.dir,year,"/",basename,"/",basename, appendage))
+      writeRaster(out2[[c(b,g,r)]], filename = str_c(year,"/",basename,"/",basename, "_rgb.envi"), overwrite = T)
+  })
+  }
+
+  makeRGBfromAVIRIS_ng<- function(rd.dir, year, basenames, dir.appendage, file.appendage, r, g, b) {
+  out1 <- lapply(basenames[[1]], function(basename) {
+      out2 <- stack(str_c(rd.dir,year,"/",basename,dir.appendage,"/",basename, file.appendage))
+      writeRaster(out2[[c(b,g,r)]], filename = str_c(year,"/",basename,dir.appendage,"/",basename, "_rgb.envi"), overwrite = T)
+  })
+  }
+
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R
+basenames.2009 <-read.table("madisonaviris2009.txt", stringsAsFactors = F)
+appendage.2009 <- "_ort_img_tafkaa_orig_refl_img_bsq_trc_xtr"
+makeRGBfromAVIRIS_c("../../RD/aviris_madison/", "2009", basenames.2009, appendage.2009, 33,20,10)
+#+end_src
+
+#+begin_src R
+  basenames.2010 <-read.table("madisonaviris2010.txt", stringsAsFactors = F)
+  appendage.2010 <- "_sc01_ort_img_tafkaa_orig_refl_img_bsq_trc_xtr"
+  makeRGBfromAVIRIS_c("../../RD/aviris_madison/", "2010", basenames.2010, appendage.2010, 33,20,10)
+#+end_src
+
+#+begin_src R
+  basenames.2011 <-read.table("madisonaviris2011.txt", stringsAsFactors = F)
+  appendage.2011 <- "_sc01_ort_img_tafkaa_orig_refl_img_bsq_trc_xtr"
+  makeRGBfromAVIRIS_c("../../RD/aviris_madison/", "2011", basenames.2011, appendage.2011, 33,20,10)
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R
+    basenames.2015 <-read.table("madisonaviris2015.txt", stringsAsFactors = F)
+  dir.appendage.2015 <- "_rfl_v1h"
+  file.appendage.2015 <- "_corr_v1h_img"
+    makeRGBfromAVIRIS_ng("../../RD/aviris_madison/", "2015", basenames.2015, dir.appendage.2015, file.appendage.2015, 62,42,22)
+#+end_src
+
+#+begin_src R
+    basenames.2016 <-read.table("madisonaviris2016.txt", stringsAsFactors = F)
+  dir.appendage.2016 <- "_rfl_v1n2"
+  file.appendage.2016 <- "_corr_v1n2_img"
+    makeRGBfromAVIRIS_ng("../../RD/aviris_madison/", "2016", basenames.2016, dir.appendage.2016, file.appendage.2016, 62,42,22)
+#+end_src
+
+
+
+
+#+begin_src R
+  rd.dir <- "../../RD/aviris_madison/"
+img.basenames <- c("madisonaviris2009.txt","madisonaviris2010.txt","madisonaviris2011.txt","madisonaviris2015.txt","madisonaviris2016.txt")
+
+#+end_src
+
+#+RESULTS:
+
+* Make rotated GeoTifs (these won't be viewed properly by R's raster package)
+** For 2016 imagery
+#+begin_src sh
+
+#+end_src
+
